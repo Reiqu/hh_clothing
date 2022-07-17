@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import de.reiqu.hhclothing.ui.features.clothing.DetailScreen.DetailScreen
+import de.reiqu.hhclothing.ui.features.clothing.DetailScreen
 import de.reiqu.hhclothing.ui.features.clothing.administration.add.AddScreen
 import de.reiqu.hhclothing.ui.features.clothing.administration.list.ListScreen
 import de.reiqu.hhclothing.ui.features.dashboard.DashboardView
@@ -27,6 +27,8 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
+
+
 
                     NavHost(navController = navController, startDestination = "dashboard") {
                         composable("dashboard") { DashboardView(navController).Dashboard() }

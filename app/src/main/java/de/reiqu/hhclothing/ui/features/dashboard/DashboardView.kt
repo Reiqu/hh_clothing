@@ -1,23 +1,16 @@
 package de.reiqu.hhclothing.ui.features.dashboard
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -25,12 +18,14 @@ import de.reiqu.hhclothing.R
 import de.reiqu.hhclothing.error.ClothingNotFound
 import de.reiqu.hhclothing.models.Item
 import de.reiqu.hhclothing.models.StoredItem
+import de.reiqu.hhclothing.shared.StoreAPI
 
 class DashboardView(private val navController: NavController? = null) {
 
+    val store:StoreAPI = StoreAPI()
 
-    private var items: List<Item> = List(400) {Item( it, "Test $it", "Description $it")}
-    private var storedItems: List<StoredItem> = List(200) { StoredItem(it, (0..10).random()) }
+
+    private val items: List<Item> = List(400) {Item( it, "Test $it", "Description $it")}
 
     private fun getClothingById(id: Int): Item {
         items.forEach { item ->
@@ -41,9 +36,13 @@ class DashboardView(private val navController: NavController? = null) {
         throw ClothingNotFound()
     }
 
-    @Preview
     @Composable
     fun Dashboard() {
+
+        val storedItems: List<StoredItem> by remember {
+            mutableStateOf(List(200) { StoredItem(it, (0..10).random()) })
+        }
+
         Column (
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.SpaceEvenly,
@@ -64,13 +63,13 @@ class DashboardView(private val navController: NavController? = null) {
                 )
                 Row {
                     Button(
-                        onClick = { navController!!.navigate("clothing_list") },
+                        onClick = { navController!!.navigate("clothing_list") {popUpTo("dashboard")} },
                         modifier = Modifier.padding(8.dp),
                     ) {
                         Icon(painter = painterResource(id = R.drawable.ic_list), contentDescription = "List")
                     }
                     Button(
-                        onClick = { navController!!.navigate("clothing_add") },
+                        onClick = { navController!!.navigate("clothing_add") {popUpTo("dashboard")} },
                         modifier = Modifier.padding(8.dp),
                     ) {
                         Icon(painter = painterResource(id = R.drawable.ic_add), contentDescription = "Add")
@@ -113,7 +112,7 @@ class DashboardView(private val navController: NavController? = null) {
         ) {
             Row (
                 modifier = Modifier
-                    .clickable { navController!!.navigate("clothing_details") }
+                    .clickable { navController!!.navigate("clothing_details") {popUpTo("dashboard")} }
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
@@ -138,19 +137,5 @@ class DashboardView(private val navController: NavController? = null) {
                 }
             }
         }
-    }
-
-     @Composable
-     fun ClothingElementPreview(
-         storedItem: StoredItem = storedItems[0]
-     ) {
-         ClothingElement(storedItem = storedItem)
-     }
-
-    @Composable
-    fun ClothingListPreview(
-        storedItem: StoredItem = storedItems[0]
-    ) {
-        ClothingList(clothes = storedItems)
     }
 }
