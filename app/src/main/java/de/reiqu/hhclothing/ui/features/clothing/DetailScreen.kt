@@ -15,6 +15,7 @@ import de.reiqu.hhclothing.R
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import java.lang.RuntimeException
 
 class DetailScreen(private val navController: NavController) {
 
@@ -45,6 +46,12 @@ class DetailScreen(private val navController: NavController) {
                 Text(text = "Beschreibung")
                 Text(text = "Derzeitig in Hamburg:")
                 Text(text = "0")
+                
+                Divider()
+                Button(
+                    onClick = { throw RuntimeException("Test Crash") }) {
+                    Text(text = "Test Crash")
+                }
             }
         }
     }

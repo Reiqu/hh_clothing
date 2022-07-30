@@ -1,8 +1,9 @@
 package de.reiqu.hhclothing.shared.database.interfaces
 
 import androidx.room.*
-import de.reiqu.hhclothing.models.Item
-import de.reiqu.hhclothing.models.db.Storage
+import de.reiqu.hhclothing.shared.database.entities.Item
+import de.reiqu.hhclothing.shared.database.entities.Storage
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface StorageDao {
@@ -13,13 +14,13 @@ interface StorageDao {
     fun delete(storage: Storage)
 
     @Update
-    fun updateCount(item: Item, count: Int)
+    fun updateCount(storage: Storage)
 
     @Query("SELECT * FROM storage")
-    fun getAll(): List<Storage>
+    fun getAll(): Flow<List<Storage>>
 
-    @Query("SELECT * FROM storage JOIN item ON storage.item_id = item.uid")
-    fun getStorage(): Map<Storage, List<Item>>
+    @Query("SELECT * FROM storage WHERE storage.item_id = :itemId")
+    fun getStoredItemByID(itemId: Int): Flow<List<Storage>>
 
 }
 

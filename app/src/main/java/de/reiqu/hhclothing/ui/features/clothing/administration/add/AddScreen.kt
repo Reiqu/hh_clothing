@@ -18,6 +18,7 @@ import androidx.navigation.NavController
 
 class AddScreen (private val navController: NavController) {
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun Content() {
         Surface {

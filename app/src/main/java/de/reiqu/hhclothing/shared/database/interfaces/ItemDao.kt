@@ -1,20 +1,24 @@
 package de.reiqu.hhclothing.shared.database.interfaces
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
-import de.reiqu.hhclothing.models.Item
+import androidx.room.*
+import de.reiqu.hhclothing.shared.database.entities.Item
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ItemDao {
+    @Query("Select * from item")
+    fun getItemsList(): Flow<List<Item>>
+
     @Insert
-    fun insertAll(vararg items: Item)
+    fun insertItem(item: Item)
+
+    @Insert
+    fun insertItemBulk(vararg items: Item)
+
+    @Update
+    fun updateItem(item: Item)
 
     @Delete
-    fun delete(item: Item)
-
-    @Query("SELECT * FROM item")
-    fun getAll(): List<Item>
+    fun deleteItem(item: Item)
 
 }

@@ -16,20 +16,28 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import de.reiqu.hhclothing.R
 import de.reiqu.hhclothing.error.ClothingNotFound
-import de.reiqu.hhclothing.models.Item
-import de.reiqu.hhclothing.models.StoredItem
-import de.reiqu.hhclothing.shared.StoreAPI
+import de.reiqu.hhclothing.shared.database.entities.Item
+import de.reiqu.hhclothing.shared.database.entities.Storage
 
 class DashboardView(private val navController: NavController? = null) {
 
-    val store:StoreAPI = StoreAPI()
-
-
-    private val items: List<Item> = List(400) {Item( it, "Test $it", "Description $it")}
+    private val items: List<Item> = List(400) {
+        Item(
+            uid = it,
+            name = "Test $it",
+            description = "Description $it",
+            image_url = "https://via.placeholder.com/150",
+            created_at = "2022-07-30",
+            updated_at = "2022-07-30",
+            image_small_url = "https://via.placeholder.com/150",
+            image_id = 2,
+            image_alt = "Placeholder" ,
+            image_thumbnail_url = "https://via.placeholder.com/150")
+    }
 
     private fun getClothingById(id: Int): Item {
         items.forEach { item ->
-            if (item.id == id) {
+            if (item.uid == id) {
                 return item
             }
         }
@@ -39,8 +47,14 @@ class DashboardView(private val navController: NavController? = null) {
     @Composable
     fun Dashboard() {
 
-        val storedItems: List<StoredItem> by remember {
-            mutableStateOf(List(200) { StoredItem(it, (0..10).random()) })
+        val storedItems: List<Storage> by remember {
+            mutableStateOf(List(200) { Storage(
+                uid =  it,
+                amount =  (0..10).random(),
+                updated_at = "2022-07-30",
+                created_at = "2022-07-30",
+                item_id = 2
+            ) })
         }
 
         Column (
@@ -83,7 +97,7 @@ class DashboardView(private val navController: NavController? = null) {
     }
 
     @Composable
-    fun ClothingList(clothes: List<StoredItem>) {
+    fun ClothingList(clothes: List<Storage>) {
         LazyColumn(
             modifier = Modifier
                 .padding(8.dp)
@@ -96,15 +110,14 @@ class DashboardView(private val navController: NavController? = null) {
     }
 
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun ClothingElement(storedItem: StoredItem) {
+    fun ClothingElement(storedItem: Storage) {
         var amount: Int by remember {
             mutableStateOf(storedItem.amount)
         }
 
         val item: Item by remember {
-            mutableStateOf(getClothingById(storedItem.id))
+            mutableStateOf(getClothingById(storedItem.uid))
         }
 
         ElevatedCard( modifier = Modifier
@@ -118,8 +131,10 @@ class DashboardView(private val navController: NavController? = null) {
                 verticalAlignment = Alignment.CenterVertically
             ){
                 Text(
-                    text = item.name,
-                    modifier = Modifier.padding(8.dp)
+                    text = item.name.toString(),
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .widthIn(130.dp, 200.dp)
                 )
 
                 Button(
